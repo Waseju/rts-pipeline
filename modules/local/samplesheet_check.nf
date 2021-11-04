@@ -20,12 +20,12 @@ process SAMPLESHEET_CHECK {
     path samplesheet
 
     output:
-    path '*.csv'
+    path '*inputs'
 
     script: // This script is bundled with the pipeline, in nf-core/rts/bin/
     """
     check_samplesheet.py \\
-        $samplesheet \\
-        samplesheet.valid.csv
+        input/ \\
+        inputs/
     """
 }

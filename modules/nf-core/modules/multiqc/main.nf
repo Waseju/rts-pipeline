@@ -14,7 +14,7 @@ process MULTIQC {
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/multiqc:1.10.1--py_0"
     } else {
-        container "quay.io/biocontainers/multiqc:1.10.1--py_0"
+        container "ghcr.io/waseju/rts:latest"
     }
 
     input:
@@ -29,6 +29,8 @@ process MULTIQC {
     script:
     def software = getSoftwareName(task.process)
     """
+    ls
+    xvfb-run -a ImageJ-linux64 --run macro.ijm
     multiqc -f $options.args .
     multiqc --version | sed -e "s/multiqc, version //g" > ${software}.version.txt
     """
