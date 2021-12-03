@@ -6,7 +6,7 @@ keywords:
     - adapters
     - fastq
 tools:
-    - fastqc:
+    - z:
         description: |
             FastQC gives general quality metrics about your reads.
             It provides information about the quality score distribution

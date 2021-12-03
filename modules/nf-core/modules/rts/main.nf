@@ -5,26 +5,23 @@ params.options = [:]
 options        = initOptions(params.options)
 
 process FASTQC {
-    tag "15"
+    //tag "$meta.id"
     label 'process_low'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
 
     conda (params.enable_conda ? "bioconda::fastqc=0.11.9" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/fastqc:0.11.9--0"
-    } else {
-        container "ghcr.io/waseju/rts:latest"
-    }
+    container "ghcr.io/waseju/rts:latest"
 
     input:
-    path(reads)
+    path(brightfields)
 
     output:
     
     //tuple val(meta), path("*.html"), emit: html
-    //tuple val(meta), path("*.zip") , emit: zip
+    path("*predictions") , emit: predictions
+
     //path  "*.version.txt"          , emit: version
 
     script:
@@ -32,7 +29,8 @@ process FASTQC {
     def software = getSoftwareName(task.process)
     //def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     """
-    rts_package -i inputs
+    wget https://zenodo.org/record/5181261/files/model.ckpt
+    rts_package -i $brightfields -o predictions -m model.ckpt
     """
 
 }

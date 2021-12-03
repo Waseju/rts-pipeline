@@ -5,33 +5,30 @@ params.options = [:]
 options        = initOptions(params.options)
 
 process MULTIQC {
+    //tag "$meta.id"
     label 'process_medium'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:[:], publish_by_meta:[]) }
-
-    conda (params.enable_conda ? "bioconda::multiqc=1.10.1" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/multiqc:1.10.1--py_0"
-    } else {
-        container "ghcr.io/waseju/rts:latest"
-    }
+    container "ghcr.io/waseju/fiji:latest"
 
     input:
-    path multiqc_files
+    path input
 
     output:
-    path "*multiqc_report.html", emit: report
-    path "*_data"              , emit: data
-    path "*_plots"             , optional:true, emit: plots
-    path "*.version.txt"       , emit: version
+    //path "*multiqc_report.html", emit: report
+    path("*ratios") , emit: ratios
+    path("*brightfields") , emit: brightfields
 
     script:
     def software = getSoftwareName(task.process)
     """
-    ls
-    xvfb-run -a ImageJ-linux64 --run macro.ijm
-    multiqc -f $options.args .
-    multiqc --version | sed -e "s/multiqc, version //g" > ${software}.version.txt
+    cp /opt/fiji/ratio_macro.ijm ./
+    mkdir output
+    xvfb-run -a /opt/fiji/Fiji.app/ImageJ-linux64 --run ratio_macro.ijm 'inDir="$input/",outDir="output/"'
+    mkdir ratios
+    mkdir brightfields
+    mv output/*_ratio.tif ratios/
+    mv output/*.tif brightfields/
     """
 }

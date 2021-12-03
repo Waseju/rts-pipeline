@@ -58,6 +58,7 @@ multiqc_options.args += params.multiqc_title ? Utils.joinModuleArgs(["--title \"
 // MODULE: Installed directly from nf-core/modules
 //
 include { FASTQC  } from '../modules/nf-core/modules/fastqc/main'  addParams( options: modules['fastqc'] )
+include { RTSSTAT  } from '../modules/nf-core/modules/rtsstat/main'  addParams( options: modules['rtsstat'] )
 include { MULTIQC } from '../modules/nf-core/modules/multiqc/main' addParams( options: multiqc_options   )
 
 /*
@@ -83,8 +84,16 @@ workflow RTS {
     //
     // MODULE: Run FastQC
     //
-    FASTQC (
+    MULTIQC (
        INPUT_CHECK.out.reads
+    )
+    FASTQC (
+       MULTIQC.out.brightfields
+    )
+    RTSSTAT(
+        INPUT_CHECK.out.reads,
+        MULTIQC.out.ratios,
+        FASTQC.out.predictions
     )
     //ch_software_versions = ch_software_versions.mix(FASTQC.out.version.first().ifEmpty(null))
 
