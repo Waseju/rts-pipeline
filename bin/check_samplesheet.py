@@ -7,7 +7,7 @@ import os
 import sys
 import errno
 import argparse
-
+import csv
 import shutil
 
 
@@ -31,9 +31,9 @@ def make_dir(path):
 
 
 def print_error(error, context="Line", context_str=""):
-    error_str = "ERROR: Please check samplesheet -> {}".format(error)
+    error_str = "ERROR: Please check metadata.csv -> {}".format(error)
     if context != "" and context_str != "":
-        error_str = "ERROR: Please check samplesheet -> {}\n{}: '{}'".format(
+        error_str = "ERROR: Please check metadata.csv -> {}\n{}: '{}'".format(
             error, context.strip(), context_str.strip()
         )
     print(error_str)
@@ -53,8 +53,14 @@ def check_samplesheet(file_in, file_out):
     For an example see:
     https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
     """
-
-    sample_mapping_dict = {}
+    print(file_in)
+    with open(f'{file_in}/metadata.csv', mode='r') as metadata:
+        csv_reader = csv.DictReader(metadata)
+        for row in csv_reader:
+            if not ("Filename" in row.keys() and "Treatment" in row.keys() and "Breeding Line" in row.keys()):
+                print_error("Wrong column names")
+            if not (row["Filename"] and row["Treatment"] and row["Breeding Line"]):
+                print_error("Empty column")
     out_dir = os.path.dirname(file_out)
     #make_dir(out_dir)
     shutil.copytree(file_in, out_dir)

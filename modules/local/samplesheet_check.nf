@@ -25,7 +25,7 @@ process SAMPLESHEET_CHECK {
     script: // This script is bundled with the pipeline, in nf-core/rts/bin/
     """
     check_samplesheet.py \\
-        input/ \\
+        $samplesheet \\
         inputs/
     """
 }
