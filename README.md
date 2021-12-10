@@ -28,9 +28,8 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 <!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
 
-1. Predict Segmentation
-2. Calculate ratiomeric image
-3. Conduct statistical analysis
+1. Read QC ([`RootSeg`](https://www.bioinformatics.babraham.ac.uk/projects/rootseg/))
+2. Present QC for raw reads ([`RatioConv`](http://multiqc.info/))
 
 ## Quick Start
 

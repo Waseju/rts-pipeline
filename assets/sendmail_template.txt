@@ -31,7 +31,7 @@ def mqcFileObj = new File("$mqcFile")
 if (mqcFileObj.length() < mqcMaxSize){
 out << """
 --nfcoremimeboundary
-Content-Type: text/html; name=\"multiqc_report\"
+Content-Type: text/html; name=\"ratioconv_report\"
 Content-Transfer-Encoding: base64
 Content-ID: <mqcreport>
 Content-Disposition: attachment; filename=\"${mqcFileObj.getName()}\"

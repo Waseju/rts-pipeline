@@ -11,7 +11,7 @@ WorkflowRts.initialise(params, log)
 
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
+def checkPathParamList = [ params.input, params.ratioconv_config]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
@@ -23,8 +23,8 @@ if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input sample
 ========================================================================================
 */
 
-ch_multiqc_config        = file("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
-ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config) : Channel.empty()
+ch_ratioconv_config        = file("$projectDir/assets/ratioconv_config.yaml", checkIfExists: true)
+ch_ratioconv_custom_config = params.ratioconv_config ? Channel.fromPath(params.ratioconv_config) : Channel.empty()
 
 /*
 ========================================================================================
@@ -51,14 +51,15 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check' addParams( opti
 ========================================================================================
 */
 
-def multiqc_options   = modules['multiqc']
-multiqc_options.args += params.multiqc_title ? Utils.joinModuleArgs(["--title \"$params.multiqc_title\""]) : ''
+def ratioconv_options   = modules['ratioconv']
+ratioconv_options.args += params.ratioconv_title ? Utils.joinModuleArgs(["--title \"$params.ratioconv_title\""]) : ''
 
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { FASTQC  } from '../modules/nf-core/modules/fastqc/main'  addParams( options: modules['fastqc'] )
-include { MULTIQC } from '../modules/nf-core/modules/multiqc/main' addParams( options: multiqc_options   )
+include { ROOTSEG  } from '../modules/nf-core/modules/rootseg/main'  addParams( options: modules['rootseg'] )
+include { RTSSTAT  } from '../modules/nf-core/modules/rtsstat/main'  addParams( options: modules['rtsstat'] )
+include { RATIOCONV } from '../modules/nf-core/modules/ratioconv/main' addParams( options: ratioconv_options   )
 
 /*
 ========================================================================================
@@ -67,7 +68,7 @@ include { MULTIQC } from '../modules/nf-core/modules/multiqc/main' addParams( op
 */
 
 // Info required for completion email and summary
-def multiqc_report = []
+def ratioconv_report = []
 
 workflow RTS {
 
@@ -81,12 +82,20 @@ workflow RTS {
     )
 
     //
-    // MODULE: Run FastQC
+    // MODULE: Run RootSeg
     //
-    FASTQC (
-        INPUT_CHECK.out.reads
+    RATIOCONV (
+       INPUT_CHECK.out.reads
     )
-    ch_software_versions = ch_software_versions.mix(FASTQC.out.version.first().ifEmpty(null))
+    ROOTSEG (
+       RATIOCONV.out.brightfields
+    )
+    RTSSTAT(
+        INPUT_CHECK.out.reads,
+        RATIOCONV.out.ratios,
+        ROOTSEG.out.predictions
+    )
+    //ch_software_versions = ch_software_versions.mix(ROOTSEG.out.version.first().ifEmpty(null))
 
     //
     // MODULE: Pipeline reporting
@@ -104,23 +113,23 @@ workflow RTS {
     )
 
     //
-    // MODULE: MultiQC
+    // MODULE: RatioConv
     //
     workflow_summary    = WorkflowRts.paramsSummaryMultiqc(workflow, summary_params)
     ch_workflow_summary = Channel.value(workflow_summary)
 
-    ch_multiqc_files = Channel.empty()
-    ch_multiqc_files = ch_multiqc_files.mix(Channel.from(ch_multiqc_config))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(GET_SOFTWARE_VERSIONS.out.yaml.collect())
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+    ch_ratioconv_files = Channel.empty()
+    ch_ratioconv_files = ch_ratioconv_files.mix(Channel.from(ch_ratioconv_config))
+    ch_ratioconv_files = ch_ratioconv_files.mix(ch_ratioconv_custom_config.collect().ifEmpty([]))
+    ch_ratioconv_files = ch_ratioconv_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_ratioconv_files = ch_ratioconv_files.mix(GET_SOFTWARE_VERSIONS.out.yaml.collect())
+    //ch_ratioconv_files = ch_ratioconv_files.mix(ROOTSEG.out.zip.collect{it[1]}.ifEmpty([]))
 
-    MULTIQC (
-        ch_multiqc_files.collect()
-    )
-    multiqc_report       = MULTIQC.out.report.toList()
-    ch_software_versions = ch_software_versions.mix(MULTIQC.out.version.ifEmpty(null))
+    // RATIOCONV (
+    //    ch_ratioconv_files.collect()
+    //)
+    //ratioconv_report       = RATIOCONV.out.report.toList()
+    //ch_software_versions = ch_software_versions.mix(RATIOCONV.out.version.ifEmpty(null))
 }
 
 /*
@@ -131,7 +140,7 @@ workflow RTS {
 
 workflow.onComplete {
     if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
+        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, ratioconv_report)
     }
     NfcoreTemplate.summary(workflow, params, log)
 }

@@ -1,20 +1,20 @@
-name: fastqc
-description: Run FastQC on sequenced reads
+name: rootseg
+description: Run RootSeg on sequenced reads
 keywords:
     - quality control
     - qc
     - adapters
     - fastq
 tools:
-    - fastqc:
+    - z:
         description: |
-            FastQC gives general quality metrics about your reads.
+            RootSeg gives general quality metrics about your reads.
             It provides information about the quality score distribution
             across your reads, the per base sequence content (%A/C/G/T).
             You get information about adapter contamination and other
             overrepresented sequences.
-        homepage: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
-        documentation: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/
+        homepage: https://www.bioinformatics.babraham.ac.uk/projects/rootseg/
+        documentation: https://www.bioinformatics.babraham.ac.uk/projects/rootseg/Help/
 input:
     - meta:
         type: map
@@ -34,12 +34,12 @@ output:
             e.g. [ id:'test', single_end:false ]
     - html:
         type: file
-        description: FastQC report
-        pattern: "*_{fastqc.html}"
+        description: RootSeg report
+        pattern: "*_{rootseg.html}"
     - zip:
         type: file
-        description: FastQC report archive
-        pattern: "*_{fastqc.zip}"
+        description: RootSeg report archive
+        pattern: "*_{rootseg.zip}"
     - version:
         type: file
         description: File containing software version

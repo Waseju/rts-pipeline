@@ -3,10 +3,10 @@
     "homePage": "https://github.com/nf-core/rts",
     "repos": {
         "nf-core/modules": {
-            "fastqc": {
+            "rootseg": {
                 "git_sha": "e937c7950af70930d1f34bb961403d9d2aa81c7d"
             },
-            "multiqc": {
+            "ratioconv": {
                 "git_sha": "e937c7950af70930d1f34bb961403d9d2aa81c7d"
             }
         }
