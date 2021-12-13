@@ -54,7 +54,7 @@ def check_samplesheet(file_in, file_out):
     https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
     """
     print(file_in)
-    with open(f'{file_in}/metadata.csv', mode='r') as metadata:
+    with open(os.path.join(f'{file_in}','metadata.csv'), mode='r') as metadata:
         csv_reader = csv.DictReader(metadata)
         for row in csv_reader:
             if not ("Filename" in row.keys() and "Treatment" in row.keys() and "Breeding Line" in row.keys()):
