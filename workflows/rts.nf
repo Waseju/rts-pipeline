@@ -85,10 +85,10 @@ workflow RTS {
     // MODULE: Run RootSeg
     //
     RATIOCONV (
-       INPUT_CHECK.out.reads
+        INPUT_CHECK.out.reads
     )
     ROOTSEG (
-       RATIOCONV.out.brightfields
+        RATIOCONV.out.brightfields
     )
     RTSSTAT(
         INPUT_CHECK.out.reads,

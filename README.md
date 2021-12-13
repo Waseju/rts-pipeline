@@ -25,7 +25,6 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 ## Pipeline summary
 
-
 1. Segment root tissue. ([`RootSeg`],(`https://github.com/Waseju/rts_package`))
 2. Convert Ratiomeric images ([`RatioConv`])
 3. Create raw ratios and plots ([`RTSStat`])
