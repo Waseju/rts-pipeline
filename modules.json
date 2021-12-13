@@ -4,10 +4,10 @@
     "repos": {
         "nf-core/modules": {
             "rootseg": {
-                "git_sha": "e937c7950af70930d1f34bb961403d9d2aa81c7d"
+                "git_sha": "6695420d7b22fdc9a6e4a9e1bdcc4901ac8bdf46"
             },
-            "ratioconv": {
-                "git_sha": "e937c7950af70930d1f34bb961403d9d2aa81c7d"
+            "rtsstat": {
+                "git_sha": "6fe9d043205f7c8027df6082297ed7e50e2651ff"
             }
         }
     }

@@ -16,7 +16,6 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
 **nf-core/rts** is a bioinformatics best-practice analysis pipeline for Root tissue segmentation for A. thaliana.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
@@ -28,8 +27,9 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 <!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
 
-1. Read QC ([`RootSeg`](https://www.bioinformatics.babraham.ac.uk/projects/rootseg/))
-2. Present QC for raw reads ([`RatioConv`](http://multiqc.info/))
+1. Segment root tissue. ([`RootSeg`],('https://github.com/Waseju/rts_package))
+2. Convert Ratiomeric images ([`RatioConv`])
+3. Create raw ratios (['RTSStat])
 
 ## Quick Start
 
@@ -49,10 +49,8 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 4. Start running your own analysis!
 
-    <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
-
     ```console
-    nextflow run nf-core/rts -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --genome GRCh37
+    nextflow run nf-core/rts -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input folder
     ```
 
 ## Documentation
@@ -65,7 +63,6 @@ nf-core/rts was originally written by Julian Wanner.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
 
 ## Contributions and Support
 

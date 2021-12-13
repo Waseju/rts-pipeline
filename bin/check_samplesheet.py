@@ -2,12 +2,12 @@
 
 # This script is based on the example at: https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
 
-import os
-import sys
-import errno
 import argparse
 import csv
+import errno
+import os
 import shutil
+import sys
 
 
 def parse_args(args=None):
@@ -39,7 +39,6 @@ def print_error(error, context="Line", context_str=""):
     sys.exit(1)
 
 
-# TODO nf-core: Update the check_samplesheet function
 def check_samplesheet(file_in, file_out):
     """
     This function checks that the samplesheet follows the following structure:
@@ -47,7 +46,7 @@ def check_samplesheet(file_in, file_out):
 
     """
     print(file_in)
-    with open(os.path.join(f'{file_in}','metadata.csv'), mode='r') as metadata:
+    with open(os.path.join(f'{file_in}', 'metadata.csv'), mode='r') as metadata:
         csv_reader = csv.DictReader(metadata)
         for row in csv_reader:
             if not ("Filename" in row.keys() and "Treatment" in row.keys() and "Breeding Line" in row.keys()):
@@ -55,7 +54,7 @@ def check_samplesheet(file_in, file_out):
             if not (row["Filename"] and row["Treatment"] and row["Breeding Line"]):
                 print_error("Empty column")
     out_dir = os.path.dirname(file_out)
-    #make_dir(out_dir)
+    # make_dir(out_dir)
     shutil.copytree(file_in, out_dir)
 
 
