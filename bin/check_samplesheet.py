@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-# TODO nf-core: Update the script to check the samplesheet
 # This script is based on the example at: https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
 
 import os
@@ -45,13 +44,7 @@ def check_samplesheet(file_in, file_out):
     """
     This function checks that the samplesheet follows the following structure:
 
-    sample,fastq_1,fastq_2
-    SAMPLE_PE,SAMPLE_PE_RUN1_1.fastq.gz,SAMPLE_PE_RUN1_2.fastq.gz
-    SAMPLE_PE,SAMPLE_PE_RUN2_1.fastq.gz,SAMPLE_PE_RUN2_2.fastq.gz
-    SAMPLE_SE,SAMPLE_SE_RUN1_1.fastq.gz,
 
-    For an example see:
-    https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
     """
     print(file_in)
     with open(os.path.join(f'{file_in}','metadata.csv'), mode='r') as metadata:
