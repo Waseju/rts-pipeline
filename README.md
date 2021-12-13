@@ -25,11 +25,10 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 ## Pipeline summary
 
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
 
-1. Segment root tissue. ([`RootSeg`],('https://github.com/Waseju/rts_package))
+1. Segment root tissue. ([`RootSeg`],(`https://github.com/Waseju/rts_package`))
 2. Convert Ratiomeric images ([`RatioConv`])
-3. Create raw ratios (['RTSStat])
+3. Create raw ratios and plots ([`RTSStat`])
 
 ## Quick Start
 
@@ -62,7 +61,6 @@ The nf-core/rts pipeline comes with documentation about the pipeline [usage](htt
 nf-core/rts was originally written by Julian Wanner.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
-
 
 ## Contributions and Support
 
