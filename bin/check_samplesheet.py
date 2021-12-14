@@ -8,6 +8,8 @@ import errno
 import os
 import shutil
 import sys
+import tarfile
+import urllib.request
 
 
 def parse_args(args=None):
@@ -39,13 +41,20 @@ def print_error(error, context="Line", context_str=""):
     sys.exit(1)
 
 
-def check_samplesheet(file_in, file_out):
+def check_samplesheet(file_in: str, file_out):
     """
     This function checks that the samplesheet follows the following structure:
 
 
     """
     print(file_in)
+    if file_in=="testdata.tar.gz?raw=true/":
+        thetarfile = "https://github.com/Waseju/rts-pipeline/blob/d7a3a2d363190e3d490db0472ff6b97ca82bb7fd/testdata/testdata.tar.gz?raw=true"
+        ftpstream = urllib.request.urlopen(thetarfile)
+        file = tarfile.open(fileobj=ftpstream, mode="r|gz")
+        file.extractall('./')
+        file.close()
+        file_in = "testdata"
     with open(os.path.join(f'{file_in}', 'metadata.csv'), mode='r') as metadata:
         csv_reader = csv.DictReader(metadata)
         for row in csv_reader:
